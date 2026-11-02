@@ -1,9 +1,8 @@
-/* Kelime Atölyesi yapılandırması. Yalnızca bu dosyayı düzenlemen yeterli. */
+/* Dilkuşu yapılandırması. Yalnızca bu dosyayı düzenlemen yeterli. */
 window.KA_CONFIG = {
-  // Google Forms ya da Tally adresi. Adresteki {bildirim} yerine hata bildirimi gelir.
-  // Boşsa "Hata bildir" GitHub'da bir konu açar (GitHub hesabı gerekir).
-  feedbackFormUrl: '',
-  // GoatCounter site kodu (örn. 'kelimeatolyesi'). Boşsa sayım yapılmaz.
-  // Doldurursan hakkinda.html içindeki gizlilik metnini de güncelle.
-  goatcounter: ''
+  // Google Analytics 4 ölçüm kimliği, örn. 'G-XXXXXXX'. Boşsa ölçüm yapılmaz ve izin penceresi çıkmaz.
+  gaId: '',
+  // Google Form bağlantısı: google-form-olustur.gs çalışınca verdiği satırı buraya yapıştır.
+  // Boşsa geri bildirim formu GitHub'da bir konu açar (GitHub hesabı gerekir).
+  form: null
 };
