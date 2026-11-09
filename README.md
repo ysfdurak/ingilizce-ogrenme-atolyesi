@@ -18,7 +18,7 @@ Türkçe konuşan kullanıcıların seviyelerine uygun içeriği bulmasını, ke
 
 ## Portföydeki yeri
 
-Yusuf Durak ürün kapsamını, seviye bazlı öğrenme akışını ve sınav hazırlığı bölümünü belirledi. Kod ve öğrenme içeriği yapay zekâ desteğiyle geliştirildi. Uygulama önce **Kelime Atölyesi**, ardından **Dilkuşu** adıyla yayımlandı. [Portföy deposundaki kaynak sürüm](https://github.com/ysfdurak/ysfdurak.github.io/tree/d5584e4db718927bde55b12b0cf92d4baab9d5e0/dilkusu).
+Yusuf Durak ürün kapsamını, seviye bazlı öğrenme akışını ve sınav hazırlığı bölümünü belirledi. Kod ve öğrenme içeriği yapay zekâ desteğiyle geliştirildi.
 
 HTML, CSS ve JavaScript ile hazırlanan statik uygulama derleme gerektirmez. Çalışma akışı `app.js` dosyasında, tanıtım `tanitim/` altında, statik içerik sayfaları `dilbilgisi/` ve `yds-kelimeleri/` altında bulunur. Service worker ve web manifesti PWA desteğini sağlar.
 
