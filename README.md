@@ -1,14 +1,37 @@
-# Dilkuşu (beta)
+# İngilizce Öğrenme Atölyesi
 
-**Türkçe anlatımlı İngilizce ve YDS, YÖKDİL hazırlığı. Kurulum yok, hesap yok.**
+**A1–C2 İngilizce öğrenme ve YDS, e-YDS, YÖKDİL hazırlık uygulaması.**
 
-**Dene:** https://ysfdurak.github.io/dilkusu/
+Türkçe konuşan kullanıcıların seviyelerine uygun içeriği bulmasını, kelimeleri aralıklı tekrar etmesini ve ilerlemelerini tek uygulamada takip etmesini sağlar. Ücretsiz beta sürümü hesap açmadan tarayıcıda çalışır.
 
-- A1'den C2'ye 75 tema ünitesi, 193 dilbilgisi konusu ve aralıklı tekrar
-- 15.000'den fazla kelime ve kalıp, 155 hikâye, 175 diyalog
-- YDS, e-YDS ve YÖKDİL bölümü: özgün denemeler ve 4.702 kayıtlı sınav sözlüğü
-- İlerleme yalnızca kullanıcının tarayıcısında durur; yedek dosyasıyla taşınır
+[Proje tanıtımı](https://ysfdurak.github.io/ingilizce-ogrenme-atolyesi/tanitim/) · [Uygulama](https://ysfdurak.github.io/ingilizce-ogrenme-atolyesi/) · [Hakkında ve gizlilik](https://ysfdurak.github.io/ingilizce-ogrenme-atolyesi/hakkinda.html)
+![İngilizce Öğrenme Atölyesi — A1–C2](og.png)
 
-Ürün kararlarını ve kapsamı Yusuf Durak belirledi; kod ve içerik yapay zekâ (Claude) ile geliştirildi. ÖSYM ya da YÖK ile bağı yoktur.
+## Uygulamada neler var?
 
-Lisans: [LICENSE.md](LICENSE.md) · Ayrıntılar: [Hakkında ve gizlilik](https://ysfdurak.github.io/dilkusu/hakkinda.html)
+| Çalışma alanı | İçerik |
+| --- | --- |
+| A1–C2 müfredatı | 75 tema ünitesi ve 193 dilbilgisi konusu |
+| Kelime ve bağlam | 15.000'den fazla kelime ve kalıp, 155 hikâye, 175 diyalog ve dinleme etkinlikleri |
+| Tekrar ve ilerleme | Aralıklı tekrar, tarayıcıda saklanan ilerleme ve dosyadan yedekleme |
+| Sınav hazırlığı | YDS, e-YDS ve YÖKDİL için özgün denemeler ve 4.702 kayıtlı sınav sözlüğü |
+
+## Portföydeki yeri
+
+Yusuf Durak ürün kapsamını, seviye bazlı öğrenme akışını ve sınav hazırlığı bölümünü belirledi. Kod ve öğrenme içeriği yapay zekâ desteğiyle geliştirildi. Uygulama önce **Kelime Atölyesi**, ardından **Dilkuşu** adıyla yayımlandı. [Portföy deposundaki kaynak sürüm](https://github.com/ysfdurak/ysfdurak.github.io/tree/d5584e4db718927bde55b12b0cf92d4baab9d5e0/dilkusu).
+
+HTML, CSS ve JavaScript ile hazırlanan statik uygulama derleme gerektirmez. Çalışma akışı `app.js` dosyasında, tanıtım `tanitim/` altında, statik içerik sayfaları `dilbilgisi/` ve `yds-kelimeleri/` altında bulunur. Service worker ve web manifesti PWA desteğini sağlar.
+
+## Yerelde çalıştırma
+
+Depo kökünde şu komutu çalıştır.
+
+```sh
+python -m http.server 8000
+```
+
+[Uygulamayı](http://localhost:8000/) veya [tanıtım sayfasını](http://localhost:8000/tanitim/) aç. GitHub Pages kaynak ayarı `main` dalı ve `/ (root)` klasörüdür.
+
+## Kayıtlar, içerik ve lisans
+
+İlerleme tarayıcıda saklanır. Profil üzerinden yedek alabilir ve önceki sürümlerin yedeklerini yükleyebilirsin. İçerik beta aşamasında ve kapsamlı öğretmen incelemesi bekliyor. Denemeler uygulamaya özel hazırlandı. Kullanım ve üçüncü taraf kaynak koşulları için [lisansa](LICENSE.md) bak.

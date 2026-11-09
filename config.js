@@ -1,4 +1,4 @@
-/* Dilkuşu yapılandırması. Yalnızca bu dosyayı düzenlemen yeterli. */
+/* İngilizce Öğrenme Atölyesi yapılandırması. Yalnızca bu dosyayı düzenlemen yeterli. */
 window.KA_CONFIG = {
   // Google Analytics 4 ölçüm kimliği, örn. 'G-XXXXXXX'. Boşsa ölçüm yapılmaz ve izin penceresi çıkmaz.
   gaId: '',

@@ -1,4 +1,4 @@
-/* Dilkuşu ölçümü: yalnızca kullanıcı izin verirse Google Analytics yüklenir.
+/* İngilizce Öğrenme Atölyesi ölçümü: yalnızca kullanıcı izin verirse Google Analytics yüklenir.
    Ad, e-posta, cevap ya da çalışma içeriği gönderilmez. */
 (function(){
   var C=window.KA_CONFIG||{},KEY='dk_olcum',ID=C.gaId,on=false,scr='',det='',sec=0,lastIn=Date.now();

@@ -1,5 +1,5 @@
-/* Dilkuşu: önce ağ, ağ yoksa son kaydedilen kopya. */
-const CACHE='dilkusu-v1';
+/* İngilizce Öğrenme Atölyesi: önce ağ, ağ yoksa son kaydedilen kopya. */
+const CACHE='ingilizce-ogrenme-atolyesi-v1';
 const CORE=['./','index.html','app.js','config.js','hakkinda.html','olcum.js','geri-bildirim.html','vendor/fonts.css','favicon.svg','vendor/fonts/nunito-latin-wght-normal.woff2','vendor/fonts/nunito-latin-ext-wght-normal.woff2','vendor/fonts/baloo-2-latin-wght-normal.woff2','vendor/fonts/baloo-2-latin-ext-wght-normal.woff2'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).catch(()=>{}))});
 self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));

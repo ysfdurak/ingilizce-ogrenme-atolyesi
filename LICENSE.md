@@ -1,4 +1,4 @@
-# Dilkuşu kullanım lisansı
+# İngilizce Öğrenme Atölyesi kullanım lisansı
 
 © 2026 Yusuf Durak. Aşağıda başka lisansa bağlananlar dışında tüm hakları saklıdır.
 

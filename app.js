@@ -1,4 +1,4 @@
-/* Dilkuşu © 2026 Yusuf Durak. Kullanım koşulları: LICENSE.md */
+/* İngilizce Öğrenme Atölyesi © 2026 Yusuf Durak. Kullanım koşulları: LICENSE.md */
 
 const BASE=[
 ["book","noun","a set of printed pages fastened together and read","kitap","I read a book every week.","Her hafta bir kitap okurum."],
@@ -837,7 +837,7 @@ function idioms(){$('#cnt').textContent='';const L=S.idl||'A2',K=S.idk||'d',T=S.
  <div class="seg">${[['d','Deyimler'],['a','Atasözleri'],['s','Hikâyeler']].map(([k,t])=>`<button data-ik="${k}" class="${K===k?'on':''}">${t} (${k==='s'?IDS.filter(x=>x[0]===L).length:inL.filter(i=>IDD[i][2]===k).length})</button>`).join('')}</div>
  ${K==='s'?iStList(L):`${list.length||T?`<select id="ith" class="inp" style="margin:0 0 6px"><option value="">Bütün konular</option>${ths.map(t=>`<option value="${t}" ${t===T?'selected':''}>${esc(IDT[t])}</option>`).join('')}</select>`:''}
  ${list.length?list.map(i=>{const r=IDD[i],s=iSt(i);return `<button class="brow" data-ii="${i}"><span><b>${esc(r[0])}</b><small>${esc(r[5])}</small></span><span class="bst">${s===2?'✓':s===1?'•':''}</span></button>`}).join(''):`<p class="ex">Bu seviyedeki ${K==='a'?'atasözleri':'deyimler'} yakında eklenecek.</p>`}`}
- <p class="ex idsrc">İfade listesi MAGPIE derlemi (Haagsma ve ark., 2020, CC BY 4.0) ve Vikisözlük (CC BY-SA) temel alınarak derlendi. Açıklamalar, Türkçe karşılıklar ve örnek cümleler Dilkuşu için özgün olarak yazıldı.</p>`;
+ <p class="ex idsrc">İfade listesi MAGPIE derlemi (Haagsma ve ark., 2020, CC BY 4.0) ve Vikisözlük (CC BY-SA) temel alınarak derlendi. Açıklamalar, Türkçe karşılıklar ve örnek cümleler İngilizce Öğrenme Atölyesi için özgün olarak yazıldı.</p>`;
  document.querySelectorAll('[data-il]').forEach(b=>b.onclick=()=>{S.idl=b.dataset.il;S.idth='';save();idioms()});
  document.querySelectorAll('[data-ik]').forEach(b=>b.onclick=()=>{S.idk=b.dataset.ik;S.idth='';save();idioms()});
  const th=$('#ith');if(th)th.onchange=e=>{S.idth=e.target.value;save();idioms()};
@@ -1403,11 +1403,11 @@ function ydOffer(){if(YD.asked)return;YD.asked=true;const c=YD.meta,s=c.sum||{};
  o.querySelector('[data-yd="y"]').onclick=async e=>{e.target.disabled=true;e.target.textContent='Yükleniyor...';try{await ydCloudLoad()}catch(er){e.target.textContent='Yüklenemedi, sonra tekrar dene'}};o.querySelector('[data-yd="n"]').onclick=cl}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&YD.st==='on'&&Date.now()-YD.last>15*6e4)ydCloudSave(true)});
 // --- dosya ---
-async function ydDownload(){const p=ydPack(),txt=JSON.stringify(p),fn='dilkusu-yedek-'+p.at.slice(0,10)+'.json';
+async function ydDownload(){const p=ydPack(),txt=JSON.stringify(p),fn='ingilizce-ogrenme-atolyesi-yedek-'+p.at.slice(0,10)+'.json';
  let dl=null;try{dl=window.claude&&claude.use?await claude.use('downloads'):null}catch(e){}
  if(dl){try{await dl.save({filename:fn,data:txt});S.ydf=p.at;save();ydRef();gmToast('<b>⬇️ Yedek dosyası kaydedildi</b><span>'+fn+'</span>','goal')}catch(e){if(e&&e.code!=='declined')gmToast('<b>Dosya kaydedilemedi</b><span>Hesap yedeği yine de çalışıyor</span>','lk')}return}
  try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'}));a.download=fn;document.body.appendChild(a);a.click();a.remove();S.ydf=p.at;save();ydRef()}catch(e){gmToast('<b>Bu görünümde dosya indirilemiyor</b>','lk')}}
-function ydUpload(f){const r=new FileReader();r.onload=()=>{let p;try{p=JSON.parse(r.result);if(!p||p.app!=='kelime-atolyesi'||!p.ls||!p.ls.kv1)throw 0;JSON.parse(p.ls.kv1)}catch(e){gmToast('<b>Bu dosya bir Dilkuşu yedeği değil</b>','lk');return}
+function ydUpload(f){const r=new FileReader();r.onload=()=>{let p;try{p=JSON.parse(r.result);if(!p||p.app!=='kelime-atolyesi'||!p.ls||!p.ls.kv1)throw 0;JSON.parse(p.ls.kv1)}catch(e){gmToast('<b>Bu dosya bir İngilizce Öğrenme Atölyesi yedeği değil</b>','lk');return}
  const s=p.sum||{};const [o,cl]=yolSheet(`<p class="big sm" style="margin:0 0 6px">Yedeği geri yükle</p><p class="se">${ydDate(p.at)} tarihli yedek: <b>${s.xp||0} XP</b>, <b>${s.lw||0}</b> öğrenilmiş kelime.</p><p class="ex">Bu cihazdaki ilerlemenin yerini alır. Şu anki ilerlemen bir kez geri alınabilir şekilde saklanır.</p><button class="btn" data-yd="y">Geri yükle</button><button class="btn no" data-yd="n" style="margin-top:8px">Vazgeç</button>`);
  o.querySelector('[data-yd="y"]').onclick=()=>ydApply(p);o.querySelector('[data-yd="n"]').onclick=cl};r.readAsText(f)}
 function ydUndo(){try{const v=localStorage.getItem('kv1_prev');if(!v)return;const cur=localStorage.getItem('kv1');localStorage.setItem('kv1',v);if(cur)localStorage.setItem('kv1_prev',cur);location.reload()}catch(e){}}
@@ -2327,7 +2327,7 @@ function krDraw(cv,cb){const W=1080,H=1350,c=cv.getContext('2d'),d=krData(),F=(w
  const gr=c.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#fff7ef');gr.addColorStop(1,'#ffe1c7');c.fillStyle=gr;c.fillRect(0,0,W,H);
  c.fillStyle='rgba(46,139,255,.10)';c.beginPath();c.arc(980,120,220,0,7);c.fill();c.fillStyle='rgba(255,107,44,.10)';c.beginPath();c.arc(80,1240,260,0,7);c.fill();
  const rr=(x,y,w,h,r)=>{c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()};
- c.fillStyle='#2b2140';c.font=F(800,40);c.fillText('Dilkuşu',80,110);c.fillStyle='#6e6280';c.font=N(700,28);c.fillText('İngilizce karnem'+(d.name?' · '+d.name:''),80,156);
+ c.fillStyle='#2b2140';c.font=F(800,40);c.fillText('İngilizce Öğrenme Atölyesi',80,110);c.fillStyle='#6e6280';c.font=N(700,28);c.fillText('İngilizce karnem'+(d.name?' · '+d.name:''),80,156);
  c.fillStyle='#fff';rr(80,210,920,470,48);c.fill();c.strokeStyle='#f0e2d4';c.lineWidth=4;c.stroke();
  c.fillStyle='#ff6b2c';c.beginPath();c.arc(290,445,150,0,7);c.fill();c.fillStyle='#fff';c.font=F(800,150);c.textAlign='center';c.fillText(d.lvl,290,495);c.textAlign='left';
  c.fillStyle='#2b2140';c.font=F(800,60);c.fillText(LVN[d.lvl]||'',480,400);c.fillStyle='#6e6280';c.font=N(700,30);

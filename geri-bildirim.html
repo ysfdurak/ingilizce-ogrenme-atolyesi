@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Geri bildirim · Dilkuşu</title>
-<meta name="description" content="Dilkuşu için hata bildir, öneride bulun ya da görüşünü paylaş.">
+<title>Geri bildirim · İngilizce Öğrenme Atölyesi</title>
+<meta name="description" content="İngilizce Öğrenme Atölyesi için hata bildir, öneride bulun ya da görüşünü paylaş.">
 <meta name="robots" content="noindex">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="vendor/fonts.css">
@@ -27,7 +27,7 @@ button[type=submit]{width:100%;margin-top:22px;border:0;cursor:pointer;font:inhe
 </style>
 </head>
 <body>
-<header class="top"><a class="brand" href="./"><img src="favicon.svg" width="30" height="30" alt="">Dilkuşu</a><a class="go" href="./">Uygulamayı aç</a></header>
+<header class="top"><a class="brand" href="./"><img src="favicon.svg" width="30" height="30" alt="">İngilizce Öğrenme Atölyesi</a><a class="go" href="./">Uygulamayı aç</a></header>
 <main>
 <h1>Geri bildirim</h1>
 <p class="lead">Bir hata mı gördün, bir fikrin mi var? Birkaç satır yeterli. Hesap gerekmez.</p>
@@ -45,7 +45,7 @@ button[type=submit]{width:100%;margin-top:22px;border:0;cursor:pointer;font:inhe
   <textarea id="mesaj" name="mesaj" maxlength="2000" required placeholder="Ne gördün, ne olmasını beklerdin?"></textarea>
 
   <fieldset>
-    <legend>Dilkuşu'nu genel olarak nasıl buldun? <span class="hint">(isteğe bağlı)</span></legend>
+    <legend>İngilizce Öğrenme Atölyesi'nu genel olarak nasıl buldun? <span class="hint">(isteğe bağlı)</span></legend>
     <div class="scale" id="puan"></div>
     <p class="hint">1 = hiç beğenmedim, 5 = çok beğendim</p>
   </fieldset>
@@ -64,7 +64,7 @@ button[type=submit]{width:100%;margin-top:22px;border:0;cursor:pointer;font:inhe
   <input id="eposta" name="eposta" type="email" maxlength="200" autocomplete="email">
 
   <button class="go" type="submit" id="gonder">Gönder</button>
-  <p class="hint" id="not">Yazdıkların Google Forms üzerinden iletilir ve yalnızca Dilkuşu'yu geliştirmek için kullanılır. Ayrıntı: <a href="hakkinda.html#gizlilik">gizlilik</a>. Şifre, kimlik numarası ya da sağlık bilgisi yazma.</p>
+  <p class="hint" id="not">Yazdıkların Google Forms üzerinden iletilir ve yalnızca İngilizce Öğrenme Atölyesi'yu geliştirmek için kullanılır. Ayrıntı: <a href="hakkinda.html#gizlilik">gizlilik</a>. Şifre, kimlik numarası ya da sağlık bilgisi yazma.</p>
 </form>
 </main>
 <footer><p><a href="./">Uygulama</a> · <a href="hakkinda.html">Hakkında</a></p></footer>
@@ -88,7 +88,7 @@ button[type=submit]{width:100%;margin-top:22px;border:0;cursor:pointer;font:inhe
       fetch(F.action,{method:'POST',mode:'no-cors',body:b}).then(function(){f.hidden=true;done.hidden=false;done.textContent='Teşekkürler, mesajın gönderildi.'}).catch(function(){document.getElementById('gonder').disabled=false;done.hidden=false;done.textContent='Gönderilemedi. İnternet bağlantını kontrol edip tekrar dene.'});
     }else{
       var body=[o.ekran&&('Bölüm: '+o.ekran),o.mesaj,o.puan&&('Puan: '+o.puan),o.hedef&&('Hedef: '+o.hedef),o.ucret&&('Ücret: '+o.ucret)].filter(Boolean).join('\n\n');
-      window.open('https://github.com/ysfdurak/ysfdurak.github.io/issues/new?title='+encodeURIComponent('[Dilkuşu] '+o.tur)+'&body='+encodeURIComponent(body).slice(0,6000),'_blank','noopener');
+      window.open('https://github.com/ysfdurak/ingilizce-ogrenme-atolyesi/issues/new?title='+encodeURIComponent('[İngilizce Öğrenme Atölyesi] '+o.tur)+'&body='+encodeURIComponent(body).slice(0,6000),'_blank','noopener');
       done.hidden=false;done.textContent='Açılan GitHub sayfasında gönder düğmesine basarak tamamla.';
     }
   });
