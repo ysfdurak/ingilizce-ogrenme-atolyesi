@@ -1,4 +1,4 @@
-// İngilizce Atölyesi · Cloudflare Workers yayın ayarları (ingilizce.ysfdurak.com).
+// İngilizce Atölyesi · Cloudflare Workers yayın ayarları (ingilizce-atolyesi.ysfdurak.com).
 // Derleme yok: depo kökündeki statik dosyalar olduğu gibi yayınlanır (.assetsignore dışındakiler).
 {
   "$schema": "https://unpkg.com/wrangler/config-schema.json",
