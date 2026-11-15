@@ -113,19 +113,22 @@
       if (el.dataset.enGloss || el.closest('#en-tour')) return;
       const own = C.glossText ? C.glossText(el) : el.innerText;
       const en = C.gloss[norm(own)] || C.gloss[strip(own)];
-      if (!en) return;
+      if (!en || en === strip(own)) return;
       el.dataset.enGloss = '1';
       const s = document.createElement('span');
       s.className = 'en-gloss';
       s.lang = 'en';
       s.textContent = en;
       if (C.blockGloss && el.matches(C.blockGloss)) s.classList.add('en-block');
+      else if (C.navGloss && el.matches(C.navGloss)) el.classList.add('en-nav');
       el.appendChild(s);
     });
   }
 
   const CSS = `
   .en-gloss{display:inline-block;margin-left:6px;font-size:11px;font-weight:500;letter-spacing:0;text-transform:none;opacity:.7;font-style:italic}
+  .en-nav{flex-wrap:wrap!important}
+  .en-nav>.en-gloss{display:block;flex-basis:100%;margin:1px 0 0 ${C.navIndent || '28px'};font-size:10.5px;line-height:1.2}
   .en-gloss.en-block{display:block;margin:2px 0 0;font-size:12px;line-height:1.3}
   #en-tour{position:fixed;right:16px;bottom:16px;z-index:2147483000;width:min(360px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:auto;background:${C.bg || '#1f2a44'};color:#f4f6fb;border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.28);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;text-align:left}
   #en-tour header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 14px 0}
