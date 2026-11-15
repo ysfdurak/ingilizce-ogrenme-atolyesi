@@ -10,7 +10,7 @@
   var ETIKET = '#tasi=';
   var SINIR = 1500000; // adres uzunluğu sınırı (karakter)
   // Yeni adres son sürümü yayınlayana kadar eski adresten yönlendirme kapalı (true yapınca açılır).
-  var YONLENDIR = false;
+  var YONLENDIR = true;
 
   function b64Yaz(metin) {
     var bayt = new TextEncoder().encode(metin), s = '';
