@@ -7,6 +7,10 @@ Türkçe konuşan kullanıcıların seviyelerine uygun içeriği bulmasını, ke
 [Proje tanıtımı](https://ingilizce-atolyesi.ysfdurak.com/tanitim/) · [Uygulama](https://ingilizce-atolyesi.ysfdurak.com/) · [Hakkında ve gizlilik](https://ingilizce-atolyesi.ysfdurak.com/hakkinda.html)
 ![İngilizce Öğrenme Atölyesi — A1–C2](og.png)
 
+## İngilizce tanıtım turu
+
+Uygulama Türkçe konuşanlar için yazıldığından arayüz Türkçe kalır. İngilizce okuyan ziyaretçi için adresin sonuna `?lang=en` eklenir: [ingilizce-atolyesi.ysfdurak.com/?lang=en](https://ingilizce-atolyesi.ysfdurak.com/?lang=en). Her bölümü anlatan bir rehber paneli açılır, menü ve başlıkların altında küçük İngilizce karşılıklar görünür; `?lang=tr` kapatır. Ayrıntı: [docs/INGILIZCE-TUR.md](docs/INGILIZCE-TUR.md).
+
 ## Uygulamada neler var?
 
 | Çalışma alanı | İçerik |
