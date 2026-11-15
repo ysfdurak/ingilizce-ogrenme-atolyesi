@@ -4,7 +4,7 @@
 
 Türkçe konuşan kullanıcıların seviyelerine uygun içeriği bulmasını, kelimeleri aralıklı tekrar etmesini ve ilerlemelerini tek uygulamada takip etmesini sağlar. Ücretsiz beta sürümü hesap açmadan tarayıcıda çalışır.
 
-[Proje tanıtımı](https://ysfdurak.github.io/ingilizce-ogrenme-atolyesi/tanitim/) · [Uygulama](https://ysfdurak.github.io/ingilizce-ogrenme-atolyesi/) · [Hakkında ve gizlilik](https://ysfdurak.github.io/ingilizce-ogrenme-atolyesi/hakkinda.html)
+[Proje tanıtımı](https://ingilizce-atolyesi.ysfdurak.com/tanitim/) · [Uygulama](https://ingilizce-atolyesi.ysfdurak.com/) · [Hakkında ve gizlilik](https://ingilizce-atolyesi.ysfdurak.com/hakkinda.html)
 ![İngilizce Öğrenme Atölyesi — A1–C2](og.png)
 
 ## Uygulamada neler var?
@@ -30,7 +30,7 @@ Depo kökünde şu komutu çalıştır.
 python -m http.server 8000
 ```
 
-[Uygulamayı](http://localhost:8000/) veya [tanıtım sayfasını](http://localhost:8000/tanitim/) aç. GitHub Pages kaynak ayarı `main` dalı ve `/ (root)` klasörüdür.
+[Uygulamayı](http://localhost:8000/) veya [tanıtım sayfasını](http://localhost:8000/tanitim/) aç. Canlı adres **ingilizce-atolyesi.ysfdurak.com** (Cloudflare Workers, `main` dalına her push'ta otomatik yayın; ayarlar `wrangler.jsonc`). Eski GitHub Pages adresi açık kalır; `tasima.js` ziyaretçiyi ilerlemesiyle birlikte yeni adrese gönderir.
 
 ## Kayıtlar, içerik ve lisans
 
