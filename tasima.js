@@ -9,6 +9,8 @@
   var ANAHTARLAR = ['kv1', 'kv1_prev', 'kvx', 'dk_fb'];
   var ETIKET = '#tasi=';
   var SINIR = 1500000; // adres uzunluğu sınırı (karakter)
+  // Yeni adres son sürümü yayınlayana kadar eski adresten yönlendirme kapalı (true yapınca açılır).
+  var YONLENDIR = false;
 
   function b64Yaz(metin) {
     var bayt = new TextEncoder().encode(metin), s = '';
@@ -24,6 +26,7 @@
   try {
     // ── 1) Eski adres ─────────────────────────────────────────────
     if (location.hostname === 'ysfdurak.github.io') {
+      if (!YONLENDIR) return;
       var yol = location.pathname.indexOf(ESKI_KOK) === 0 ? location.pathname.slice(ESKI_KOK.length) : '';
       var hedef = YENI + yol + location.search;
       var kayit = {}, var_mi = false;
