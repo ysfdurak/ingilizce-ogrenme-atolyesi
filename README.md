@@ -26,6 +26,15 @@ Yusuf Durak ürün kapsamını, seviye bazlı öğrenme akışını ve sınav ha
 
 HTML, CSS ve JavaScript ile hazırlanan statik uygulama derleme gerektirmez. Çalışma akışı `app.js` dosyasında, tanıtım `tanitim/` altında, statik içerik sayfaları `dilbilgisi/` ve `yds-kelimeleri/` altında bulunur. Service worker ve web manifesti PWA desteğini sağlar.
 
+## English
+
+**İngilizce Öğrenme Atölyesi** (English Learning Workshop) is an A1–C2 English learning and YDS, e-YDS and YÖKDİL exam-prep app for Turkish speakers. It runs in the browser without an account.
+
+- **Try it:** https://ingilizce-atolyesi.ysfdurak.com/?lang=en — explanations, feedback and exam prep are in Turkish, so the interface stays in Turkish; `?lang=en` opens a guide that explains each section, with small English labels under the menus.
+- **Content:** a daily plan built from goal, daily time and level; 75 themed units and 193 grammar topics; over 15,000 words and collocations; 155 stories and 175 dialogues; spaced review (10 minutes, 1, 3, 7 and 21 days); original YDS, e-YDS and YÖKDİL practice tests and a 4,702-entry exam glossary.
+- **Privacy:** progress stays in the browser and can be backed up to a file; installable on a phone (PWA).
+- **Stack:** static HTML, CSS and JavaScript with no build step (`app.js`, service worker, web manifest).
+
 ## Yerelde çalıştırma
 
 Depo kökünde şu komutu çalıştır.
