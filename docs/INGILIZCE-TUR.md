@@ -6,7 +6,7 @@ Bu uygulama Türkçe konuşanlar için yazıldı ve **çevrilmedi**. İngilizce 
 
 | Adres | Sonuç |
 | --- | --- |
-| `https://ingilizce-atolyesi.ysfdurak.com/?lang=en` | Tur açılır ve bu tarayıcıda hatırlanır (`localStorage` anahtarı `ia_lang`). |
+| `https://ingilizce-atolyesi.ysfdurak.com/?lang=en` | Tur açılır ve aynı sekmede gezerken açık kalır (`sessionStorage` anahtarı `ia_lang`). Yeni bir ziyarette uygulama yine Türkçe açılır. |
 | `https://ingilizce-atolyesi.ysfdurak.com/?lang=tr` | Tur kapanır. Paneldeki **Turn off** bağlantısı da aynı işi yapar. |
 
 Tur açıkken sağ altta **English guide** paneli bulunulan bölümün ne işe yaradığını anlatır; menü, kart ve başlıkların altında küçük İngilizce karşılıklar görünür. Türkçe metin yerinde kalır. Kullanıcı bir alana yazmaya başlayınca panel küçülür; yazdırırken görünmez. Tur kapalıyken uygulamada hiçbir şey değişmez.
@@ -33,4 +33,4 @@ Her şey `en-tour.js` içindedir. Dosya iki parçadır:
 
 ## Service worker
 
-`en-tour.js` service worker'ın önbellek listesine eklendi ve önbellek sürümü artırıldı; uygulama internetsiz de turu gösterir.
+`en-tour.js` service worker'ın önbellek listesine eklendi ve önbellek sürümü artırıldı (v4); uygulama internetsiz de turu gösterir.
