@@ -176,7 +176,7 @@ wire(redo)}
 function quiz(q){if(!q){const w=nextWord();if(!w)return finished();const rev=dirRev();q={w,rev,o:shuf([w,...distract(w,3)])};H.push(q);hi=H.length-1}
 const w=q.w,rev=q.rev;
 ask(q,rev?`<div class="big sm">${esc(w.tr)}</div><div class="pos">${esc(w.p)}</div>`:`<div class="big">${esc(w.w)} ${SP(w.w)}</div><div class="pos">${esc(w.p)}</div>`,rev?(o=>o.w):(o=>o.tr),R(quiz));if(!rev)sayQ(w)}
-const mkre=w=>new RegExp('\\b'+w.w.slice(0,Math.max(3,w.w.length-2))+'\\w*','i');
+const mkre=w=>{const e=t=>t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),x=w.w;if(x.length>5)return new RegExp('\\b'+e(x.slice(0,x.length-2))+'\\w*','i');const A=[e(x)+"(?:s|es|d|ed|ing|er|est|'s|n't)?"];if(/e$/i.test(x))A.push(e(x.slice(0,-1))+'ing');if(/y$/i.test(x))A.push(e(x.slice(0,-1))+'i(?:es|ed|er|est)');if(/[bcdfgklmnprtvz]$/i.test(x))A.push(e(x)+e(x.slice(-1))+'(?:ed|ing|er|est)');if(/f$/i.test(x))A.push(e(x.slice(0,-1))+'ves');return new RegExp('(?<![\\w])(?:'+A.join('|')+')(?![\\w])','i')};
 function fill(q){if(!q){let w=null;for(let i=0;i<20;i++){const x=nextWord();if(!x)return finished();if(mkre(x).test(x.ex)){w=x;break}}
 if(!w)return quiz();q={w,o:shuf([w,...distract(w,3,true)])};H.push(q);hi=H.length-1}
 const w=q.w,re=mkre(w);if(!re.test(w.ex))return quiz(q);
