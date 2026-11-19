@@ -9,6 +9,7 @@
 | MAGPIE deyim derlemi | Haagsma ve ark., 2020. https://github.com/hslh/magpie-corpus | CC BY 4.0 |
 | Vikisözlük | https://tr.wiktionary.org | CC BY-SA |
 | Baloo 2 ve Nunito | `vendor/fonts` | SIL Open Font License |
+| pdf.js 4.10.38 (legacy) | Mozilla, https://github.com/mozilla/pdf.js · `vendor/pdfjs` | Apache-2.0 (`vendor/pdfjs/LICENSE`) |
 
 Octanove ve Vikisözlük'ten gelen kelime ve ifade seçimleri, düzenlenmiş hâlleriyle birlikte CC BY-SA koşullarıyla paylaşılır. Türkçe açıklamalar, örnek cümleler ve alıştırmalar bu kapsamın dışında tutulmuştur.
 
