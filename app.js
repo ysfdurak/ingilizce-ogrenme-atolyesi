@@ -402,9 +402,10 @@ async get(k){const db=await this.open();return new Promise((res,rej)=>{const q=d
 async set(k,v){const db=await this.open();return new Promise((res,rej)=>{const t=db.transaction('f','readwrite');t.objectStore('f').put(v,k);t.oncomplete=()=>res();t.onerror=()=>rej(t.error)})},
 async del(k){const db=await this.open();return new Promise(res=>{const t=db.transaction('f','readwrite');t.objectStore('f').delete(k);t.oncomplete=()=>res();t.onerror=()=>res()})}};
 let PJ=null,BKS={},BOOKS=null,PDFD=null,BKB=null,BKC=null,BKCU=false,BADD=null;
-const loadScript=u=>new Promise((res,rej)=>{const s=document.createElement('script');s.src=u;s.onload=res;s.onerror=rej;document.head.appendChild(s)});
-async function pdfjs(){if(PJ)return PJ;const V='3.11.174',src=[['https://cdnjs.cloudflare.com/ajax/libs/pdf.js/'+V+'/pdf.min.js','https://cdnjs.cloudflare.com/ajax/libs/pdf.js/'+V+'/pdf.worker.min.js'],['https://cdn.jsdelivr.net/npm/pdfjs-dist@'+V+'/build/pdf.min.js','https://cdn.jsdelivr.net/npm/pdfjs-dist@'+V+'/build/pdf.worker.min.js']];
-for(const [a,b] of src){try{if(!window.pdfjsLib)await loadScript(a);if(!window.pdfjsWorker)await loadScript(b);window.pdfjsLib.GlobalWorkerOptions.workerSrc=b;PJ=window.pdfjsLib;return PJ}catch(e){}}throw new Error('PDF okuyucu yüklenemedi. İnternet bağlantını kontrol et.')}
+// pdf.js depodan gelir (vendor/pdfjs, 4.10.38 legacy): CDN'e ve bütünlüğü denetlenmeyen dış koda bağlı değil.
+// 3.11.174'te kötü niyetli PDF sayfada kod çalıştırabiliyordu (CVE-2024-4367); ayrıca getDocument'e isEvalSupported:false verilir.
+async function pdfjs(){if(PJ)return PJ;try{const L=await import('./vendor/pdfjs/pdf.min.mjs');L.GlobalWorkerOptions.workerSrc=new URL('vendor/pdfjs/pdf.worker.min.mjs',location.href).href;PJ=L;return PJ}catch(e){throw new Error('PDF okuyucu yüklenemedi. Sayfayı yenileyip tekrar dene.')}}
+const pdfAc=(L,buf)=>L.getDocument({data:new Uint8Array(buf.slice(0)),isEvalSupported:false,enableXfa:false}).promise;
 const tcase=s=>String(s).toLowerCase().replace(/(^|[\s\-(:'"&])([a-zçğıöşü])/g,(m,a,b)=>a+b.toUpperCase()).replace(/\b(Of|The|And|In|A|An|To|For|On|At|From|Or|Vs)\b(?!$)/g,(m,w,i)=>i===0?m:m.toLowerCase()).replace(/^./,c=>c.toUpperCase()).replace(/\bU\.s\./g,'U.S.').replace(/\bD\.h\./g,'D.H.');
 const ttl=t=>/[a-z]/.test(t)?t:tcase(t);
 const bkName=n=>String(n||'Kitabım').replace(/\.pdf$/i,'').replace(/^[0-9a-f]{6,}[-_ ]+/i,'').replace(/[_ ]*\(?pdf ?drive\)?[_ ]*/ig,' ').replace(/[_]+/g,' ').replace(/\s+/g,' ').trim()||'Kitabım';
@@ -456,7 +457,7 @@ await IDB.del('pdf:'+id);await IDB.del('parsed:'+id);BOOKS=BOOKS.filter(b=>b.id!
 async function bookImport(f){const p=$('#bkp'),bar=$('#bki');if(!p||!bar)return;$('#bkt').hidden=false;const bh=$('#bkh');if(bh)bh.hidden=true;$('#bkb').classList.add('dis');
 try{await booksLoad();const dup=BOOKS.find(b=>b.name===f.name);if(dup){p.textContent='Bu kitap zaten ekli, açılıyor...';BS().cb=dup.id;save();return bookView(dup.id)}
 p.textContent='PDF okuyucu hazırlanıyor...';const L=await pdfjs();const buf=await f.arrayBuffer();
-const pdf=await L.getDocument({data:new Uint8Array(buf.slice(0))}).promise;
+const pdf=await pdfAc(L,buf);
 const pages=await pdfToPages(pdf,(n,t)=>{p.textContent='Sayfa '+n+' / '+t+' okunuyor...';bar.style.width=(n/t*90)+'%'});
 p.textContent='Alıştırmalar ayrılıyor...';await new Promise(r=>setTimeout(r,30));
 const {secs,keys,mode}=parseBook(pages);if(mode==='scan')throw new Error('Bu PDF taranmış sayfalardan (resimlerden) oluşuyor, içinde seçilebilir metin yok. Uygulama bu tür PDF\'leri okuyamıyor. Metni yapıştırarak alıştırma ekleyebilir ya da kitabın metin katmanlı (OCR yapılmış) bir sürümünü kullanabilirsin.');if(!secs.length)throw new Error('Bu PDF\'te alıştırmaya çevrilecek kadar metin bulunamadı.');
@@ -529,7 +530,7 @@ b.disabled=true;b.textContent='Okunuyor...';
 try{const t=await ai('Bir Türk öğrenci İngilizce bir paragrafı Türkçeye çevirdi. Önce çevirisini 2-4 kısa maddede değerlendir: anlam hataları, atlanan kısımlar, daha doğal ifadeler. Sonra "Örnek çeviri:" başlığıyla doğal bir Türkçe çeviri ver. Kısa ve cesaretlendirici ol.\n\nİngilizce paragraf:\n'+s.paras[pi]+'\n\nÖğrencinin çevirisi:\n'+mine);box.innerHTML=`<div class="ka">${esc(t).replace(/\n/g,'<br>')}</div>`}catch(err){box.innerHTML=`<p class="ex">${aiErr(err)}</p>`}
 b.disabled=false;b.textContent='Karşılaştır'});
 if(tab==='p')bookPages(bk,s)}
-async function bookPages(bk,s){const box=$('#pgc');try{const L=await pdfjs();if(!PDFD||PDFD.id!==bk.id){const buf=await IDB.get('pdf:'+bk.id);if(!buf)throw new Error('PDF bulunamadı, kitabı yeniden ekle.');PDFD={id:bk.id,doc:await L.getDocument({data:new Uint8Array(buf.slice(0))}).promise}}
+async function bookPages(bk,s){const box=$('#pgc');try{const L=await pdfjs();if(!PDFD||PDFD.id!==bk.id){const buf=await IDB.get('pdf:'+bk.id);if(!buf)throw new Error('PDF bulunamadı, kitabı yeniden ekle.');PDFD={id:bk.id,doc:await pdfAc(L,buf)}}
 if(cur!=='bk'||BKC!==s.n)return;box.innerHTML='';const last=Math.min(s.p1,s.p0+3);
 for(let n=s.p0;n<=last;n++){const pg=await PDFD.doc.getPage(n),w=box.clientWidth||360,sc=w/pg.getViewport({scale:1}).width*Math.min(2,window.devicePixelRatio||1),vp=pg.getViewport({scale:sc});
 const c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;box.appendChild(c);await pg.render({canvasContext:c.getContext('2d'),viewport:vp}).promise}}
