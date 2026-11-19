@@ -86,13 +86,19 @@ if((w.c||[]).includes(x.w)||(x.c||[]).includes(w.w))s+=10;
 return[s,x]}).sort((a,b)=>b[0]-a[0]).slice(0,n).map(a=>a[1])}
 let LS=null,VO=null,STW=null,STV=null;
 const canSay=()=>{try{return 'speechSynthesis' in window&&typeof SpeechSynthesisUtterance!=='undefined'}catch(e){return false}};
-function pickVoice(){try{const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang)),re=S.ac==='uk'?/GB/i:/US/i;VO=vs.find(v=>re.test(v.lang))||vs[0]||null}catch(e){}}
+function pickVoice(){try{const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang)),re=S.ac==='uk'?/GB/i:/US/i;VO=vs.find(v=>re.test(v.lang))||vs[0]||null;
+// İkinci konuşmacı: önce öteki aksan, yoksa aynı aksanda başka bir ses. Yoksa VO2 boş kalır; sayAlt hız ve perdeyle ayırır.
+VO2=vs.find(v=>!re.test(v.lang)&&v!==VO)||vs.find(v=>v!==VO&&v.name!==(VO&&VO.name))||null}catch(e){}}
+var VO2=null;
+// Farklı konuşmacıyla seslendirme: kaçırılan kelime yeni cümlede başka bir sesle (ya da başka hız ve perdeyle) sorulur.
+function sayAlt(t){if(!canSay())return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t),v=VO2||VO;if(v){u.voice=v;u.lang=v.lang}else u.lang=S.ac==='uk'?'en-US':'en-GB';u.rate=VO2?.95:.8;u.pitch=VO2?1:1.25;speechSynthesis.speak(u)}catch(e){}}
 try{if(canSay()){speechSynthesis.onvoiceschanged=pickVoice;pickVoice()}}catch(e){}
 function say(t,slow){if(!canSay())return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=S.ac==='uk'?'en-GB':'en-US';if(VO)u.voice=VO;u.rate=slow?.65:.92;speechSynthesis.speak(u)}catch(e){}}
 const sayA=w=>{if(S.au!==false)setTimeout(()=>say(w.w),150)};
 const sayQ=w=>{if(S.au!==false)setTimeout(()=>say(w.w),300)};
 const SP=(t,c)=>canSay()?`<button class="spk ${c||''}" data-say="${esc(t)}" aria-label="Seslendir">🔊</button>`:'';
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-say]');if(!b)return;e.stopPropagation();e.preventDefault();say(b.dataset.say,!!b.dataset.slow)},true);
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-say-alt]');if(!b)return;e.stopPropagation();e.preventDefault();sayAlt(b.dataset.sayAlt)},true);
 async function ai(prompt,json){if(!window.claude)throw{code:'unavailable'};const sp=await claude.use('sample');if(!sp)throw{code:'unavailable'};return json?await sp.json(prompt,{modelTier:'quick'}):(await sp(prompt,{modelTier:'quick'})).text.trim()}
 const aiErr=e=>e&&e.code==='not_granted'?'Claude kullanımına izin verilmedi.':e&&e.code==='rate_limited'?'Çok sık istek gönderildi, biraz sonra tekrar dene.':'Claude şu an kullanılamıyor.';
 const mnHTML=w=>{const m=(S.mn||{})[key(w)];return `<div class="mn" data-k="${esc(key(w))}">${m?`<p>💡 ${esc(m)}</p><button class="lnk" data-mn="e">Çağrışımı düzenle</button>`:`<button class="lnk" data-mn="e">💡 Çağrışım ekle</button>`}</div>`};
@@ -161,7 +167,7 @@ const fa=$('#fac');if(fa){fa.value=S.ac||'us';fa.onchange=e=>{S.ac=e.target.valu
 $('#gadd').onclick=()=>go('add');$('#gmy2').onclick=()=>go('mywords')}
 function stats_old(){statsBody();gmProfile();backupCard();rpCard();settingsCard()}
 function statsBody(){const [c,q]=wCounts(words),h=wHard().length;
-$('#main').innerHTML=`<div class="card left"><div class="gbar"><b>Kelimeler</b><button class="lnk" onclick="go('kelimeler')">Ayrıntılar ›</button></div>${wStack(c,14)}<div class="wleg">${c.map((v,i)=>`<span><i style="background:${WSC[i]}"></i>${WST[i]} <b>${v}</b></span>`).join('')}</div><p class="ex" style="margin:6px 0 0">${q?q+' kelime öğrenme listende. ':''}${h?h+' kelimede zorlanıyorsun. ':''}Bugün ${fm(S.tdd||0)}, toplam ${fm(S.tt||0)}.</p></div>`}
+$('#main').innerHTML=`<div class="card left"><div class="gbar"><b>Kelimeler</b><button class="lnk" onclick="go('kelimeler')">Ayrıntılar ›</button></div>${wStack(c,14)}<div class="wleg">${c.map((v,i)=>`<span><i style="background:${WSC[i]}"></i>${WST[i]} <b>${v}</b></span>`).join('')}</div><p class="ex" style="margin:6px 0 0">${q?q+' kelime öğrenme listende. ':''}${h?h+' kelimede zorlanıyorsun. ':''}Bugün ${fm(S.tdd||0)}, toplam ${fm(S.tt||0)}.</p>${trText()?`<p class="ex" style="margin:6px 0 0">${trText()}</p>`:''}</div>`}
 function card(){const dk=filt();
 if(!dk.length){$('#main').innerHTML='<div class="card"><p>Bu filtrede kelime yok.</p></div>';$('#cnt').textContent='0 kelime';return}
 S.ci=Math.min(Math.max(S.ci||0,0),dk.length-1);const w=dk[S.ci],rev=dirRev(S.ci);
@@ -173,7 +179,7 @@ $('#pv').onclick=()=>mv(-1);$('#nt').onclick=()=>mv(1);
 $('#r .yes').onclick=()=>{award(w,1);mv(1)};$('#r .no').onclick=()=>{award(w,0);mv(1)}}
 function ask(q,head,lab,redo){const w=q.w,opts=q.o;
 $('#main').innerHTML=`<div class="card">${bd(w)}${head}</div><div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(lab(o))}</button>`).join('')}</div><div id="fb"></div>${navRow()}`;
-document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const ok=opts[b.dataset.i]===w;document.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(opts[x.dataset.i]===w)x.classList.add('good')});if(!ok)b.classList.add('bad');award(w,ok);if(!ok&&q.ls){if(S.au!==false)setTimeout(()=>say(w.w,true),150)}else sayA(w);document.querySelector('.opts').hidden=true;$('#fb').innerHTML=`<p class="vd ${ok?'good':'bad'}">${ok?'Doğru!':'Yanlış. Doğru cevap: <b>'+esc(lab(w))+'</b>'}</p>${!ok&&q.ls?missBox(w):''}${rv(w)}`});
+document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const ok=opts[b.dataset.i]===w;document.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(opts[x.dataset.i]===w)x.classList.add('good')});if(!ok)b.classList.add('bad');award(w,ok);if(!ok&&q.ls)kacirildi(w);if(!ok&&q.ls){if(S.au!==false)setTimeout(()=>say(w.w,true),150)}else sayA(w);document.querySelector('.opts').hidden=true;$('#fb').innerHTML=`<p class="vd ${ok?'good':'bad'}">${ok?'Doğru!':'Yanlış. Doğru cevap: <b>'+esc(lab(w))+'</b>'}</p>${!ok&&q.ls?missBox(w):''}${rv(w)}`});
 wire(redo)}
 function quiz(q){if(!q){const w=nextWord();if(!w)return finished();const rev=dirRev();q={w,rev,o:shuf([w,...distract(w,3)])};H.push(q);hi=H.length-1}
 const w=q.w,rev=q.rev;
@@ -198,7 +204,9 @@ newW.forEach(w=>{st.push({k:'intro',w});if(rec.length>1)st.push(rec.shift());rec
 st.push(...rec);
 const tail=shuf(dueW.map(w=>{let k=KIND[Math.floor(Math.random()*KIND.length)];if(!au&&(k==='listen'||k==='dict'))k='quiz';if(w.f&&Math.random()<.6)k='form';return{k,w,rev:Math.random()<.5}}));
 pro.forEach((s,i)=>tail.splice(Math.min(tail.length,i*2),0,s));
-return st.concat(tail)}
+// Önceki günlerde dinlemede kaçırılan kelimeler (en çok 3): bugün yeni bir cümlede, farklı bir sesle.
+const eski=au?Object.keys(S.km||{}).filter(k=>!S.km[k].t&&S.km[k].d!==today).map(k=>words.find(x=>key(x)===k)).filter(Boolean).map(w=>({k:'lnew',w,sent:altSent(w)})).filter(x=>x.sent).slice(0,3):[];
+return st.concat(eski,tail)}
 function lesson(){if(LS&&LS.done)LS=null;
 if(!LS){const st=lessonPlan();if(!st.length){$('#cnt').textContent='';$('#main').innerHTML=`<div class="card left"><p class="big sm">Bugünlük ders tamam ✅</p><p class="se">Seçili bölümde tekrar zamanı gelmiş kelime yok ve günlük yeni kelime hedefine ulaştın.</p><button class="btn" id="l1">Hikâyeyle pekiştir</button><button class="btn no" id="l2" style="margin-top:8px">Ayarları değiştir</button></div>`;$('#l1').onclick=()=>go('stories');$('#l2').onclick=()=>go('home');return}
 LS={st,i:0,ok:0,n:0,t0:Date.now(),nw:0,xp:S.xp,res:null,seen:[]}}
@@ -210,6 +218,7 @@ if(s.k==='intro')return intro(w);
 if(s.k==='form')return ivForm(w);
 if(s.k==='fill'&&mkre(w).test(s.sent||w.ex))return fill({w,sent:s.sent,o:shuf([w,...distract(w,3,true)])});
 if(s.k==='listen')return listen({w,o:O()});
+if(s.k==='lnew')return lnew({w,sent:s.sent});
 if(s.k==='dict')return typing({w,rev:true,au:true});
 if(s.k==='type')return typing({w,rev:s.rev});
 return quiz({w,rev:s.rev,o:O()})}
@@ -220,15 +229,28 @@ for(const x of words){if(x===w||!x.ex||x.ex===w.ex||x.ex.length>110||!re.test(x.
 const sc=(exact.test(x.ex)?2:0)+(x.p===w.p?1:0)-Math.abs(x.ex.length-45)/100;if(sc>bs){bs=sc;best=x.ex}}
 return bs>=2?best:(re.test(w.ex)?w.ex:null)}
 function lsNext(){const s=LS.st[LS.i];
-if(LS.res===false&&(s.rt||0)<2){const sent=s.k==='listen'?altSent(s.w):null;LS.st.splice(Math.min(LS.st.length,LS.i+(s.k==='listen'?2:4)),0,{k:sent?'fill':s.k==='dict'||s.k==='listen'||s.k==='type'||s.k==='form'?s.k:'quiz',w:s.w,sent:sent||undefined,rev:s.rev,rt:(s.rt||0)+1})}
+if(LS.res===false&&(s.rt||0)<2){const ls=s.k==='listen'||s.k==='lnew',sent=ls?altSent(s.w):null;LS.st.splice(Math.min(LS.st.length,LS.i+(ls?2:4)),0,{k:sent?(ls&&canSay()?'lnew':'fill'):s.k==='dict'||s.k==='listen'||s.k==='type'||s.k==='form'?s.k:'quiz',w:s.w,sent:sent||undefined,rev:s.rev,rt:(s.rt||0)+1})}
 if(LS.res!==null){LS.n++;if(LS.res)LS.ok++}
 LS.i++;try{window.scrollTo(0,0)}catch(e){}runStep()}
 function intro(w){if(!LS.st[LS.i].shown){LS.st[LS.i].shown=1;S.nd.n++;LS.nw++;save()}
 $('#main').innerHTML=`<div class="card left rv">${bd(w)}<div style="height:14px"></div><p class="ex">${w.f?'Yeni düzensiz fiil: üç hâlini sesli tekrar et (V1 – V2 – V3), sonra cümleyi oku.':w.k==='pv'?'Yeni phrasal verb: dinle, cümleyi sesli tekrar et; parçacığın anlama ne kattığına dikkat et.':'Yeni kelime: dinle, cümleyi sesli tekrar et, istersen bir çağrışım yaz.'}</p>${full(w)}</div>${navRow()}<button class="lnk iknow" id="iknow">✓ Bunu zaten biliyorum</button>`;wire(null);sayQ(w);$('#iknow').onclick=()=>iKnow(w)}
 function lessonEnd(){LS.done=true;const mins=Math.max(1,Math.round((Date.now()-LS.t0)/6e4)),acc=LS.n?Math.round(LS.ok/LS.n*100):0;gmDone('kel',acc);
 $('#cnt').textContent='';
-$('#main').innerHTML=`<div class="card left"><p class="big sm">Ders tamamlandı 🎉</p><p class="se"><b>${LS.nw}</b> yeni ${AREA()==='pv'?'phrasal verb':AREA()==='iv'?'düzensiz fiil':'kelime'}, <b>${LS.n}</b> soru, doğruluk <b>%${acc}</b>, ${mins} dk, +${S.xp-LS.xp} XP.</p><p class="ex">Bu kelimeler 10 dakika, 1, 3, 7, 21 ve 60 gün arayla tekrar gelecek. Her gün kısa bir ders, arada bir uzun dersten daha etkilidir.</p><button class="btn" id="l1">Bu kelimelerin geçtiği bir hikâye oku</button><button class="btn no" id="l3" style="margin-top:8px">5 yeni kelime daha</button><button class="btn no" id="l2" style="margin-top:8px">Ana ekran</button></div>`;
+$('#main').innerHTML=`<div class="card left"><p class="big sm">Ders tamamlandı 🎉</p><p class="se"><b>${LS.nw}</b> yeni ${AREA()==='pv'?'phrasal verb':AREA()==='iv'?'düzensiz fiil':'kelime'}, <b>${LS.n}</b> soru, doğruluk <b>%${acc}</b>, ${mins} dk, +${S.xp-LS.xp} XP.</p>${trText()?`<p class="ex">${trText()}</p>`:''}<p class="ex">Bu kelimeler 10 dakika, 1, 3, 7, 21 ve 60 gün arayla tekrar gelecek. Her gün kısa bir ders, arada bir uzun dersten daha etkilidir.</p><button class="btn" id="l1">Bu kelimelerin geçtiği bir hikâye oku</button><button class="btn no" id="l3" style="margin-top:8px">5 yeni kelime daha</button><button class="btn no" id="l2" style="margin-top:8px">Ana ekran</button></div>`;
 $('#l1').onclick=()=>{CUR=bestStory(LS.seen);go(CUR?'story':'stories')};$('#l2').onclick=()=>go('home');$('#l3').onclick=()=>{S.nd.n=Math.max(0,S.nd.n-5);save();LS=null;lesson()}}
+// Dinleme aktarımı (dış inceleme, Kasım 2026): kaçırılan kelime sonraki tekrarda başka bir cümlede ve başka bir sesle sorulur.
+// Başarı göstergesi yalnız ilk kez duyulan bağlamdaki cevaptır: cümle kelimenin kendi örneği değilse ve bu kelime için daha önce
+// bu cümle seslendirilmediyse sayılır (S.tr). Aynı cümleyi ikinci kez doğru bilmek ezber olabilir, sayılmaz.
+const cHash=t=>{let h=0;for(const c of String(t))h=(h*31+c.charCodeAt(0))|0;return h.toString(36)};
+function kacirildi(w){S.km=S.km||{};const k=key(w),o=S.km[k];if(!o||o.t)S.km[k]={d:new Date().toDateString()};save()}
+function lnew(q){const w=q.w,sx=q.sent;if(!sx||!canSay()||!mkre(w).test(sx))return listen({w,o:shuf([w,...distract(w,3)])});
+S.hs=S.hs||{};const k=key(w),duyulan=S.hs[k]||[],yeni=sx!==w.ex&&!duyulan.includes(cHash(sx));
+q.o=q.o||shuf([w,...distract(w,3,true)]);q.ls=1;
+ask(q,`<button class="spk big2" data-say-alt="${esc(sx)}" aria-label="Cümleyi dinle">🔊</button><p class="big sm">${esc(sx.replace(mkre(w),'_____'))}</p><div class="pos">Başka bir sesle, yeni bir cümlede: boşlukta duyduğun kelime hangisi?${yeni?'':' <span class="ex">(bu cümleyi daha önce duydun; ölçüme sayılmaz)</span>'}</div>`,o=>o.w,R(()=>lnew(q)));
+document.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>{const ok=q.o[b.dataset.i]===w;S.hs[k]=[...duyulan,cHash(sx)].slice(-8);
+if(yeni){S.tr=S.tr||{n:0,ok:0};S.tr.n++;if(ok)S.tr.ok++}if(S.km&&S.km[k]&&ok)S.km[k].t=1;save()}));
+setTimeout(()=>sayAlt(sx),300)}
+const trText=()=>S.tr&&S.tr.n?`Kaçırdığın kelimeyi yeni cümlede, başka bir sesle doğru duyma: <b>${S.tr.ok} / ${S.tr.n}</b> (%${Math.round(S.tr.ok/S.tr.n*100)}). Yalnız ilk kez duyulan cümleler sayılır.`:'';
 function listen(q){if(!canSay()){$('#main').innerHTML='<div class="card"><p class="se">Bu tarayıcı seslendirmeyi desteklemiyor. Chrome ya da Safari ile dene.</p></div>';return}
 if(!q){const w=nextWord();if(!w)return finished();q=Math.random()<.5?{w,au:true,rev:true}:{w,o:shuf([w,...distract(w,3)])};H.push(q);hi=H.length-1}
 if(q.au)return typing(q);

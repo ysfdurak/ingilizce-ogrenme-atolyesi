@@ -26,6 +26,8 @@ Uygulama Türkçe konuşanlar için yazıldığından arayüz Türkçe kalır. �
 ## Dinlemede kaçırılan kelime (Kasım 2026)
 Dinleme sorusunda yanlış şık seçilince kelime yavaş okunur ve "Kaçırdığın kelime" kutusunda yeniden, yavaş ve cümle içinde dinleme düğmeleri çıkar (`missBox`). Derste aynı kelime iki adım sonra boşluk doldurma olarak yeniden sorulur (`lsNext`). Cümle, `altSent()` ile seçilir: kelimenin aynı biçimini içeren, öğrencinin seviyesini en çok bir basamak aşan **başka** bir kelimenin örnek cümlesi; yoksa kelimenin kendi örneği (ekrandaki not buna göre değişir).
 
+**Yeni bağlamda dinleme (Kasım 2026, dış inceleme):** Kaçırılan kelime boşluk doldurma yerine **dinleyerek** yeniden sorulur (`lnew`): cümle `altSent()` ile seçilir ve **başka bir sesle** okunur (öteki aksan ya da aynı aksanda başka ses; cihazda tek ses varsa farklı hız ve perde, `sayAlt`). Dinlemede kaçırılan kelimeler kaydedilir (`S.km`); ertesi günlerdeki ilk derste en çok üç tanesi aynı biçimde sorulur. **Başarı göstergesi yalnız ilk kez duyulan cümledir:** cümle kelimenin kendi örneği değilse ve o kelime için daha önce seslendirilmediyse sayılır (`S.tr`); aynı cümleyi ikinci kez bilmek ezber olabilir, ekranda "ölçüme sayılmaz" yazar. Sonuç ders sonunda ve İstatistik ekranında görünür. Test: `tests/dinleme_aktarim_test.py`.
+
 ## Portföydeki yeri
 
 Yusuf Durak ürün kapsamını, seviye bazlı öğrenme akışını ve sınav hazırlığı bölümünü belirledi. Kod ve öğrenme içeriği yapay zekâ desteğiyle geliştirildi.
