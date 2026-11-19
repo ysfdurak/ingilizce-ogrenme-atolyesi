@@ -22,7 +22,7 @@ jobs:
         run: for f in *.js tools/*.mjs; do node --check "$f"; done
       - name: Önbellek adı (sw.js) güncel mi
         run: node tools/sw-kontrol.mjs "${{ github.event.before || github.event.pull_request.base.sha }}"
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
       - name: Playwright kur
