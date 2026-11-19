@@ -20,6 +20,9 @@ Uygulama Türkçe konuşanlar için yazıldığından arayüz Türkçe kalır. �
 | Tekrar ve ilerleme | Aralıklı tekrar, tarayıcıda saklanan ilerleme ve dosyadan yedekleme |
 | Sınav hazırlığı | YDS, e-YDS ve YÖKDİL için özgün denemeler ve 4.702 kayıtlı sınav sözlüğü |
 
+## Dinlemede kaçırılan kelime (Kasım 2026)
+Dinleme sorusunda yanlış şık seçilince kelime yavaş okunur ve "Kaçırdığın kelime" kutusunda yeniden, yavaş ve cümle içinde dinleme düğmeleri çıkar (`missBox`). Derste aynı kelime iki adım sonra boşluk doldurma olarak yeniden sorulur (`lsNext`). Cümle, `altSent()` ile seçilir: kelimenin aynı biçimini içeren, öğrencinin seviyesini en çok bir basamak aşan **başka** bir kelimenin örnek cümlesi; yoksa kelimenin kendi örneği (ekrandaki not buna göre değişir).
+
 ## Portföydeki yeri
 
 Yusuf Durak ürün kapsamını, seviye bazlı öğrenme akışını ve sınav hazırlığı bölümünü belirledi. Kod ve öğrenme içeriği yapay zekâ desteğiyle geliştirildi.
