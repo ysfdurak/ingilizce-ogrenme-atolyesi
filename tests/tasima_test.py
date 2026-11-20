@@ -20,24 +20,26 @@ sonuc=[]
 def ok(ad,kosul): sonuc.append((ad,bool(kosul))); print(('✓' if kosul else '✗'),ad)
 with sync_playwright() as p:
     b=p.chromium.launch(executable_path=CHROME,args=['--no-sandbox',f'--host-resolver-rules=MAP ysfdurak.github.io 127.0.0.1:{P2}'])
+    # Gerçek taşımada sayfaya eski adresten yönlendirmeyle gelinir (document.referrer = ysfdurak.github.io).
+    def git(pg,u): pg.goto(u, referer='https://ysfdurak.github.io/')
     def yeni_sayfa():
         c=b.new_context(accept_downloads=True); pg=c.new_page()
         pg.on('pageerror',lambda e:print('  pageerror',str(e)[:150])); return c,pg
     # A) boş cihaz
-    c,pg=yeni_sayfa(); pg.goto(URL+'#tasi='+paket(ESKI)); pg.wait_for_timeout(1500)
+    c,pg=yeni_sayfa(); git(pg,URL+'#tasi='+paket(ESKI)); pg.wait_for_timeout(1500)
     ok('A: boş cihazda kayıt yazıldı', json.loads(pg.evaluate("localStorage.getItem('kv1')"))['xp']==777)
     ok('A: not gösterilmedi', pg.locator('#tasimaNotu').count()==0)
     ok('A: adres temizlendi', '#' not in pg.url); c.close()
     # F) yeni adres bir kez açılmış (uygulamanın oluşturduğu boş kayıt) → soru sormadan yaz
     c,pg=yeni_sayfa(); pg.goto(URL); pg.wait_for_timeout(2000)
     bos=pg.evaluate("localStorage.getItem('kv1')")
-    pg.goto('about:blank'); pg.goto(URL+'#tasi='+paket(ESKI)); pg.wait_for_timeout(1500)
+    pg.goto('about:blank'); git(pg,URL+'#tasi='+paket(ESKI)); pg.wait_for_timeout(1500)
     ok('F: boş kayıt varken eski kayıt yazıldı', json.loads(pg.evaluate("localStorage.getItem('kv1')"))['xp']==777)
     ok('F: soru gösterilmedi', pg.locator('#tasimaNotu').count()==0)
     ok('F: boş kayıt kv1_prev olarak saklandı', pg.evaluate("localStorage.getItem('kv1_prev')")==bos); c.close()
     # B) farklı kayıt → indir
     c,pg=yeni_sayfa(); pg.goto(URL); pg.evaluate("v=>localStorage.setItem('kv1',v)",YENI_KV1)
-    pg.goto('about:blank'); pg.goto(URL+'#tasi='+paket(ESKI)); pg.wait_for_selector('#tasimaNotu',timeout=5000)
+    pg.goto('about:blank'); git(pg,URL+'#tasi='+paket(ESKI)); pg.wait_for_selector('#tasimaNotu',timeout=5000)
     ok('B: mevcut kayıt korunuyor (eski yazılmadı)', json.loads(pg.evaluate("localStorage.getItem('kv1')")).get('xp')!=777)
     ok('B: gelen kayıt bekletiliyor', json.loads(pg.evaluate("localStorage.getItem('kv_tasinan')"))['kv1']==ESKI['kv1'])
     ok('B: not metninde XP var', '777 XP' in pg.inner_text('#tasimaNotu'))
@@ -53,7 +55,7 @@ with sync_playwright() as p:
     pg.reload(); pg.wait_for_timeout(1000); ok('B: sonra not çıkmıyor', pg.locator('#tasimaNotu').count()==0); c.close()
     # C) farklı kayıt → bu cihazda kullan
     c,pg=yeni_sayfa(); pg.goto(URL); pg.evaluate("v=>localStorage.setItem('kv1',v)",YENI_KV1)
-    pg.goto('about:blank'); pg.goto(URL+'#tasi='+paket(ESKI)); pg.wait_for_selector('#tasimaNotu',timeout=5000)
+    pg.goto('about:blank'); git(pg,URL+'#tasi='+paket(ESKI)); pg.wait_for_selector('#tasimaNotu',timeout=5000)
     pg.on('dialog',lambda dlg: dlg.accept())
     with pg.expect_navigation(): pg.click('#tasimaNotu button:has-text("kullan")')
     pg.wait_for_timeout(1500)
@@ -62,7 +64,7 @@ with sync_playwright() as p:
     ok('C: bekleyen temizlendi', pg.evaluate("localStorage.getItem('kv_tasinan')") is None); c.close()
     # D) aynı kayıt
     c,pg=yeni_sayfa(); pg.goto(URL); pg.evaluate("e=>{localStorage.setItem('kv1',e.kv1);localStorage.setItem('kvx',e.kvx)}",ESKI)
-    pg.goto('about:blank'); pg.goto(URL+'#tasi='+paket(ESKI)); pg.wait_for_timeout(1500)
+    pg.goto('about:blank'); git(pg,URL+'#tasi='+paket(ESKI)); pg.wait_for_timeout(1500)
     ok('D: aynı kayıtta not yok', pg.locator('#tasimaNotu').count()==0); c.close()
     # E) eski adreste büyük kayıt: DOM ile not
     c,pg=yeni_sayfa(); E='http://ysfdurak.github.io/ingilizce-ogrenme-atolyesi/'
@@ -72,6 +74,21 @@ with sync_playwright() as p:
     not_=pg.locator('div[role=status]:has-text("yeni adresine taşındı")')
     ok('E: büyük kayıtta yönlendirme yok, not var', 'ysfdurak.github.io' in pg.url and not_.count()==1)
     ok('E: bağlantı doğru', not_.locator('a').get_attribute('href')=='https://ingilizce-atolyesi.ysfdurak.com/hakkinda.html'); c.close()
+    # G) eski adresten gelmeyen (başkasının hazırladığı) bağlantı: boş cihazda bile sorgusuz yazılmaz
+    for ad,ref in (('G (yönlendiren yok)',None),('H (başka site)','https://saldirgan.example/')):
+        c,pg=yeni_sayfa(); pg.goto(URL+'#tasi='+paket(ESKI), **({'referer':ref} if ref else {})); pg.wait_for_selector('#tasimaNotu',timeout=5000)
+        kv=pg.evaluate("localStorage.getItem('kv1')")
+        ok(ad+': kayıt yazılmadı', kv is None or json.loads(kv).get('xp')!=777)
+        ok(ad+': kullanıcıya uyarıyla soruluyor', 'başkası gönderdiyse kullanma' in pg.inner_text('#tasimaNotu'))
+        ok(ad+': gelen kayıt bekletilmiyor', pg.evaluate("localStorage.getItem('kv_tasinan')") is None)
+        ok(ad+': adres temizlendi', '#' not in pg.url)
+        pg.reload(); pg.wait_for_timeout(1200); ok(ad+': yenileyince soru kalmıyor', pg.locator('#tasimaNotu').count()==0); c.close()
+    # I) doğrulanmamış bağlantıda kullanıcı "kendi kaydım" derse yazılır (yönlendireni göndermeyen tarayıcı için çıkış yolu)
+    c,pg=yeni_sayfa(); pg.goto(URL+'#tasi='+paket(ESKI)); pg.wait_for_selector('#tasimaNotu',timeout=5000)
+    pg.on('dialog',lambda dlg: dlg.accept())
+    with pg.expect_navigation(): pg.click('#tasimaNotu button:has-text("Kendi kaydım")')
+    pg.wait_for_timeout(1200)
+    ok('I: onayla yazıldı', json.loads(pg.evaluate("localStorage.getItem('kv1')"))['xp']==777); c.close()
     b.close()
 srv.shutdown(); srv2.shutdown()
 bad=[a for a,k in sonuc if not k]

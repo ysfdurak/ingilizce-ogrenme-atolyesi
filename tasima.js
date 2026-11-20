@@ -70,7 +70,8 @@
   function bekleyeniSil() { try { localStorage.removeItem(BEKLEYEN); } catch (e) {} }
 
   // İki kayıt bulunduğunda gösterilen not. Hiçbir kayıt kullanıcı seçmeden silinmez.
-  function cakismaNotu(gelen) {
+  // dogrulanmamis: kayıt eski adresten yönlendirmeyle gelmedi (başkasının hazırladığı bir bağlantı olabilir).
+  function cakismaNotu(gelen, dogrulanmamis) {
     govdeHazir(function () {
       if (document.getElementById('tasimaNotu')) return;
       var xp = '?';
@@ -78,12 +79,18 @@
       var kutu = el('div', '', KUTU);
       kutu.id = 'tasimaNotu';
       kutu.setAttribute('role', 'alertdialog');
-      kutu.appendChild(el('b', 'Eski adresten ikinci bir ilerleme kaydı geldi'));
-      kutu.appendChild(el('p', 'Bu cihazda yeni adreste zaten bir kaydın var, o yüzden eski adresteki kayıt (' + xp +
-        ' XP) otomatik yazılmadı. İkisi de duruyor; ne yapacağını sen seç.', 'margin:6px 0 0'));
+      if (dogrulanmamis) {
+        kutu.appendChild(el('b', 'Bu bağlantı bir ilerleme kaydı taşıyor (' + xp + ' XP)'));
+        kutu.appendChild(el('p', 'Kayıt eski adresten yönlendirmeyle gelmediği için otomatik yüklenmedi. Eski adresteki kendi kaydınsa kullanabilirsin. ' +
+          'Bağlantıyı başkası gönderdiyse kullanma: kayıt onun hazırladığı içerikle değişir.', 'margin:6px 0 0'));
+      } else {
+        kutu.appendChild(el('b', 'Eski adresten ikinci bir ilerleme kaydı geldi'));
+        kutu.appendChild(el('p', 'Bu cihazda yeni adreste zaten bir kaydın var, o yüzden eski adresteki kayıt (' + xp +
+          ' XP) otomatik yazılmadı. İkisi de duruyor; ne yapacağını sen seç.', 'margin:6px 0 0'));
+      }
       var bilgi = el('p', '', 'margin:8px 0 0;color:#ffd27a');
-      var indirB = el('button', '⬇️ Eski kaydı yedek dosyası olarak indir', DUGME + ';background:#ffd27a;color:#1f2a44');
-      var kullanB = el('button', 'Eski kaydı bu cihazda kullan', DUGME);
+      var indirB = el('button', dogrulanmamis ? '⬇️ Kaydı yedek dosyası olarak indir' : '⬇️ Eski kaydı yedek dosyası olarak indir', DUGME + ';background:#ffd27a;color:#1f2a44');
+      var kullanB = el('button', dogrulanmamis ? 'Kendi kaydım, bu cihazda kullan' : 'Eski kaydı bu cihazda kullan', DUGME);
       var sonraB = el('button', 'Daha sonra', DUGME + ';background:transparent;color:#fff;text-decoration:underline');
       indirB.onclick = function () {
         try {
@@ -94,7 +101,7 @@
         } catch (e) { bilgi.textContent = 'Bu görünümde dosya indirilemiyor. Başka bir tarayıcıda dene.'; }
       };
       kullanB.onclick = function () {
-        if (!confirm('Eski adresteki kayıt bu cihazdakinin yerini alacak. Şu anki kaydın bir kez geri alınabilir şekilde saklanır (Profil → Yedekleme → Son geri yüklemeyi geri al). Devam edilsin mi?')) return;
+        if (!confirm((dogrulanmamis ? 'Bağlantıdaki kayıt' : 'Eski adresteki kayıt') + ' bu cihazdakinin yerini alacak. Şu anki kaydın bir kez geri alınabilir şekilde saklanır (Profil → Yedekleme → Son geri yüklemeyi geri al). Devam edilsin mi?')) return;
         try {
           var cur = localStorage.getItem('kv1');
           if (cur) localStorage.setItem('kv1_prev', cur);
@@ -143,11 +150,16 @@
     }
 
     // ── 2) Yeni adres ─────────────────────────────────────────────
-    var bekleyen = null;
+    var bekleyen = null, dogrulanmamis = false;
     if (location.hash.indexOf(ETIKET) === 0) {
       var gelen = JSON.parse(b64Oku(location.hash.slice(ETIKET.length)));
       var mevcut = localStorage.getItem('kv1');
-      if (mevcut === null || bosKayit(mevcut, localStorage.getItem('kvx'))) {
+      // Yalnız eski adresin kendi yönlendirmesi (yönlendiren: ysfdurak.github.io) sorgusuz yazılır. Başkasının
+      // hazırladığı #tasi= bağlantısı ilk açılışta ziyaretçinin kaydını değiştiremesin: o durumda kullanıcıya sorulur.
+      var eskidenGeldi = /^https?:\/\/ysfdurak\.github\.io(\/|$)/.test(document.referrer || '');
+      if (!eskidenGeldi) {
+        if (typeof gelen.kv1 === 'string') { bekleyen = gelen; dogrulanmamis = true; }
+      } else if (mevcut === null || bosKayit(mevcut, localStorage.getItem('kvx'))) {
         if (mevcut !== null) localStorage.setItem('kv1_prev', mevcut);
         ANAHTARLAR.forEach(function (k) {
           if (k === 'kv1_prev' && mevcut !== null) return; // boş kaydın yedeği zaten yazıldı
@@ -164,6 +176,6 @@
     if (!bekleyen) {
       try { bekleyen = JSON.parse(localStorage.getItem(BEKLEYEN)); } catch (e) { bekleyen = null; }
     }
-    if (bekleyen && typeof bekleyen.kv1 === 'string') cakismaNotu(bekleyen);
+    if (bekleyen && typeof bekleyen.kv1 === 'string') cakismaNotu(bekleyen, dogrulanmamis);
   } catch (e) { /* taşıma başarısız olursa uygulama normal açılır */ }
 })();
