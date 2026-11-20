@@ -20,6 +20,8 @@ jobs:
           node-version: '22'
       - name: JavaScript sözdizimi
         run: for f in *.js tools/*.mjs; do node --check "$f"; done
+      - name: Sınav soru bankası (exb.js) ile EXFULL uyumu
+        run: node tools/exb-kontrol.mjs
       - name: Önbellek adı (sw.js) güncel mi
         run: node tools/sw-kontrol.mjs "${{ github.event.before || github.event.pull_request.base.sha }}"
       - uses: actions/setup-python@v7
