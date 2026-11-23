@@ -33,3 +33,5 @@ jobs:
         run: python3 tests/tasima_test.py "$(which google-chrome)"
       - name: Dinleme aktarımı (kaçırılan kelime yeni cümlede, başka sesle)
         run: python3 tests/dinleme_aktarim_test.py "$(which google-chrome)"
+      - name: Boş soru paketiyle sınav başlamıyor (Chrome)
+        run: python3 tests/bos_sinav_test.py "$(which google-chrome)"
