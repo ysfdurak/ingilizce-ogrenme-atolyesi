@@ -4,5 +4,8 @@
   "$schema": "https://unpkg.com/wrangler/config-schema.json",
   "name": "ingilizce-ogrenme-atolyesi",
   "compatibility_date": "2026-11-01",
-  "assets": { "directory": "./" }
+  "assets": { "directory": "./" },
+  // PR önizlemeleri (Workers Builds → npx wrangler preview) bu bölümü ister. Proje yalnızca statik
+  // dosya sunduğu için önizlemenin ayrı bir ayarı yok; bölüm bilerek boş.
+  "previews": {}
 }
