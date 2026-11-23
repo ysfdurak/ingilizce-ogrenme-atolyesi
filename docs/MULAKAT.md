@@ -37,6 +37,7 @@ Testleri ve CI'ı baştan kurardım; bu depoda yakın zamana kadar CI yoktu.
 
 - **Seviye filtresi:** Zor ve anlamı farklı cümle çıkıyordu → aynı yazım ve en fazla bir üst seviye → bazı kelimede örnek cümleye dönülüyor.
 - **İlerleme cihazda:** Hesap yok, gizlilik yüksek → cihaz değişince yedek dosyası gerekiyor.
+- **Boş soru paketi:** Soru bankası (`exb.js`) eksik yüklenince sıfır soruluk sınavın süresi başlıyor, pratikte sayfa hata veriyordu → `exVar()` soru yoksa sınavı hiç açmaz, uyarı gösterir (denetim D10, `tests/bos_sinav_test.py`) → kullanıcı sayfayı yenilemek zorunda.
 
 ---
-Son güncelleme: 19 Kasım 2026.
+Son güncelleme: 23 Kasım 2026.

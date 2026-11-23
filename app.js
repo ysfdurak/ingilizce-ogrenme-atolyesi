@@ -2410,10 +2410,12 @@ let EXS=null,EXI=null;
 function exFlat(items){const out=[];items.forEach(it=>{if(it.qs)it.qs.forEach((q,i)=>out.push({it,qi:i,t:it.t,q:q.q,o:q.o,a:q.a,w:q.w}));else out.push({it,qi:-1,t:it.t,q:it.q,o:it.o,a:it.a,w:it.w})});return out}
 function exPick(t,n,f){const D=EXD(),pool=exPool().filter(x=>x.t===t&&(!f||x.f===f||x.f==='gen'));const un=shuf(pool.filter(x=>!D.seen[x.id])),sn=shuf(pool.filter(x=>D.seen[x.id]));return un.concat(sn).slice(0,n)}
 const EXMIX={kel:3,dil:5,cloze:1,tam:6,ent:2,tre:1,oku:2,diy:3,yak:2,par:2,ala:3};
+// Soru paketi eksik ya da boşsa sınav (ve süresi) başlamaz; 0/0 puan yazılmaz.
+function exVar(qs){if(qs&&qs.length)return true;gmToast('Bu bölüm için soru bulunamadı; soru paketi eksik yüklenmiş olabilir. Sayfayı yenileyip tekrar dene.');return false}
 function exStart(mode,t){if(!EXB)return exHazir(()=>exStart(mode,t));const h=HD(),f=h.w==='yds'&&h.st==='yok'?(h.sf||null):null;let items;
  if(mode==='d'){items=[];EXK.forEach(k=>{let n=EXMIX[k];if(k==='diy'&&h.st==='yok'){n=0}items.push(...exPick(k,n,f))});if(h.st==='yok')items.push(...exPick('tam',2,f))}
  else{const n=t==='cloze'?2:t==='oku'?2:10;items=exPick(t,n,f)}
- const qs=exFlat(items);EXS={m:mode,t,qs,ans:qs.map(()=>null),mk:{},i:0,t0:Date.now(),end:mode==='d'?Date.now()+Math.round(qs.length*2.25)*60000:null,fb:false,done:false};go('sinavq')}
+ const qs=exFlat(items);if(!exVar(qs))return;EXS={m:mode,t,qs,ans:qs.map(()=>null),mk:{},i:0,t0:Date.now(),end:mode==='d'?Date.now()+Math.round(qs.length*2.25)*60000:null,fb:false,done:false};go('sinavq')}
 // --- merkez ---
 function sinav(){$('#cnt').textContent='';const D=EXD(),h=HD(),n=typeof hdDays==='function'?hdDays():null,last=D.h[D.h.length-1],best=D.h.reduce((m,x)=>Math.max(m,x.sc),0);
  const acc=k=>{const r=D.ty[k];return r&&r.n?Math.round(r.ok/r.n*100):null};const weak=EXK.filter(k=>acc(k)!=null&&acc(k)<80).sort((a,b)=>acc(a)-acc(b)).slice(0,2);
@@ -2472,7 +2474,7 @@ const EXFN={S:'Sağlık',O:'Sosyal',F:'Fen'};
 const exName=id=>id[0]==='Y'?'YDS deneme '+id.slice(1):'YÖKDİL '+EXFN[id[1]]+' '+id.slice(2);
 const exFullTaken=id=>!!(EXD().full||{})[id];
 const exPool=()=>EXB.filter(x=>!x.ex||exFullTaken(x.ex));
-function exStartFull(id){if(!EXB)return exHazir(()=>exStartFull(id));const KO=['kel','dil','cloze','tam','ent','tre','par','ala','oku'],items=EXB.filter(x=>x.ex===id).sort((a,b)=>id[0]==='K'?(KO.indexOf(a.t)-KO.indexOf(b.t))||a.n-b.n:a.n-b.n),qs=exFlat(items);EXS={m:'d',full:id,t:null,qs,ans:qs.map(()=>null),mk:{},i:0,t0:Date.now(),end:Date.now()+180*60000,done:false};go('sinavq')}
+function exStartFull(id){if(!EXB)return exHazir(()=>exStartFull(id));const KO=['kel','dil','cloze','tam','ent','tre','par','ala','oku'],items=EXB.filter(x=>x.ex===id).sort((a,b)=>id[0]==='K'?(KO.indexOf(a.t)-KO.indexOf(b.t))||a.n-b.n:a.n-b.n),qs=exFlat(items);if(!exVar(qs))return;EXS={m:'d',full:id,t:null,qs,ans:qs.map(()=>null),mk:{},i:0,t0:Date.now(),end:Date.now()+180*60000,done:false};go('sinavq')}
 // YDS kelimeleri
 YDSW.forEach(v=>{v.k='yds';v.t=({v:'Fiiller',adj:'Sıfatlar',adv:'Zarflar',n:'İsimler',pv:'Phrasal verbs',lk:'Bağlaçlar',pp:'Kalıplar'})[v.g]||'Diğer';v.f=null;words.push(v)});
 ARN.yds='YDS kelimeleri';ADS.yds='YDS, e-YDS ve YÖKDİL sınavlarında sık çıkan akademik kelime ve kalıplar. Her birinde Türkçe anlam, sınavda karşına çıkabilecek eş anlamlılar ve akademik bir örnek cümle var.';
