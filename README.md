@@ -28,6 +28,10 @@ Dinleme sorusunda yanlış şık seçilince kelime yavaş okunur ve "Kaçırdı�
 
 **Yeni bağlamda dinleme (Kasım 2026, dış inceleme):** Kaçırılan kelime boşluk doldurma yerine **dinleyerek** yeniden sorulur (`lnew`): cümle `altSent()` ile seçilir ve **başka bir sesle** okunur (öteki aksan ya da aynı aksanda başka ses; cihazda tek ses varsa farklı hız ve perde, `sayAlt`). Dinlemede kaçırılan kelimeler kaydedilir (`S.km`); ertesi günlerdeki ilk derste en çok üç tanesi aynı biçimde sorulur. **Başarı göstergesi yalnız ilk kez duyulan cümledir:** cümle kelimenin kendi örneği değilse ve o kelime için daha önce seslendirilmediyse sayılır (`S.tr`); aynı cümleyi ikinci kez bilmek ezber olabilir, ekranda "ölçüme sayılmaz" yazar. Sonuç ders sonunda ve İstatistik ekranında görünür. Test: `tests/dinleme_aktarim_test.py`.
 
+## Kullanım ölçümü (25 Kasım 2026)
+
+Ölçüm Google Analytics'ten (izne bağlıydı, kimlik hiç girilmemişti) ortak ölçüm servisine (olcum.ysfdurak.com, ysfdurak.com → `sunucu/olcum`) geçti. `olcum.js` yalnız `ingilizce-atolyesi.ysfdurak.com` adresinde servisin betiğini yükler; uygulama her bölüm değişiminde `dkScreen(bölümAdı)` çağırır, yalnız bölüm adı gider (ünite kimliği, kelime, cevap gitmez). Çerez yok, izin penceresi yok, DNT/GPC'ye uyulur, `?olcum=kapat` ile o tarayıcıda kapanır. CSP (`_headers`) yalnız `script-src` ve `connect-src` için bu adrese açık. Panel: olcum.ysfdurak.com/yonetim → İngilizce Atölyesi.
+
 ## Portföydeki yeri
 
 Yusuf Durak ürün kapsamını, seviye bazlı öğrenme akışını ve sınav hazırlığı bölümünü belirledi. Kod ve öğrenme içeriği yapay zekâ desteğiyle geliştirildi.
